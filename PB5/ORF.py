@@ -25,14 +25,11 @@ def upstream(sequence, order):
 	return downstream(sequence, -order)
 
 # Cria arquivo
-def create_file(orfs):
+def create_file(orfs, orders):
 	newFileName = "orfs.fasta"
 	file = open(newFileName, "w")
-	for i in range(1, 7):
-		file.write(">orf +" + str(i))
-		file.write("\n")
-		file.write(orfs[i - 1])
-		file.write("\n")
+	for index, order in enumerate(orders):
+		file.write(f">orf {order:+d}\n{orfs[index]}\n")
 	file.close()
 
 # Main
@@ -41,12 +38,13 @@ with open(fileName) as fp:
 	fpContent = fp.readlines()
 
 	sequence = fpContent[1]
+	orders = (1, 2, 3, -1, -2, -3)
 
 	orfs = []
-	for i  in range(1, 4):
-		orfs.append(downstream(sequence, i))
+	for order  in orders:
+		if(order > 0):
+			orfs.append(downstream(sequence, order))
+		else:
+			orfs.append(upstream(sequence, order))
 
-	for i  in range(-1, -4, -1):
-		orfs.append(upstream(sequence, i))
-
-	create_file(orfs)
+	create_file(orfs, orders)
